@@ -2,9 +2,6 @@ import streamlit as st
 import numpy as np
 import joblib
 
-model_knn = joblib.load("ET_DE_KNN.pkl")
-model_knnpca = joblib.load("ET_DE_KNN_PCA.pkl")
-model_mice = joblib.load("ET_DE_MICE.pkl")
 # ----------------------------------------------------
 # Title
 # ----------------------------------------------------
@@ -13,7 +10,7 @@ st.title("AI-Based SCC Compressive Strength Predictor")
 st.write("Metaheuristic Optimized Extra Trees Models")
 
 # ----------------------------------------------------
-# Model Selection
+# Select Imputation Method
 # ----------------------------------------------------
 
 imputation = st.selectbox(
@@ -26,13 +23,13 @@ imputation = st.selectbox(
 # ----------------------------------------------------
 
 if imputation == "KNN":
-    model = joblib.load("models/ET_DE_KNN.pkl")
+    model = joblib.load("ET_DE_KNN.pkl")
 
 elif imputation == "KNN_PCA":
-    model = joblib.load("models/ET_DE_KNN_PCA.pkl")
+    model = joblib.load("ET_DE_KNN_PCA.pkl")
 
 else:
-    model = joblib.load("models/ET_GA_MICE.pkl")
+    model = joblib.load("ET_DE_MICE.pkl")
 
 # ----------------------------------------------------
 # SCM Selection
@@ -42,15 +39,15 @@ st.header("SCM Selection")
 
 scm = st.selectbox(
     "Select SCM Type",
-    ["RHA","GGBS","MK","FFA","SCBA"]
+    ["RHA", "GGBS", "MK", "FFA", "SCBA"]
 )
 
 scm_map = {
-    "RHA":0,
-    "GGBS":1,
-    "MK":2,
-    "FFA":3,
-    "SCBA":4
+    "RHA": 0,
+    "GGBS": 1,
+    "MK": 2,
+    "FFA": 3,
+    "SCBA": 4
 }
 
 scm_code = scm_map[scm]
@@ -90,7 +87,6 @@ rcpt = st.number_input("RCPT")
 if st.button("Predict Strength"):
 
     features = np.array([[
-
         scm_code,
         cement,
         replacement,
@@ -109,7 +105,6 @@ if st.button("Predict Strength"):
         lbox,
         split,
         rcpt
-
     ]])
 
     prediction = model.predict(features)[0]
