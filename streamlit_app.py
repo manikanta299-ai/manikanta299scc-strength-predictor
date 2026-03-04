@@ -2,89 +2,113 @@ import streamlit as st
 import numpy as np
 import joblib
 
-# ----------------------------------------------------
-# Title
-# ----------------------------------------------------
+# ------------------------------------------------
+# PAGE SETTINGS
+# ------------------------------------------------
+
+st.set_page_config(
+    page_title="SCC Strength Predictor",
+    page_icon="🧱",
+    layout="wide"
+)
 
 st.title("AI-Based SCC Compressive Strength Predictor")
 st.write("Metaheuristic Optimized Extra Trees Models")
 
-# ----------------------------------------------------
-# Select Imputation Method
-# ----------------------------------------------------
+# ------------------------------------------------
+# MODEL SELECTION
+# ------------------------------------------------
 
 imputation = st.selectbox(
     "Select Imputation Method",
     ["KNN", "KNN_PCA", "MICE"]
 )
 
-# ----------------------------------------------------
-# Load Correct Model
-# ----------------------------------------------------
+# ------------------------------------------------
+# LOAD MODEL
+# ------------------------------------------------
 
-if imputation == "KNN":
-    model = joblib.load("ET_DE_KNN.pkl")
+try:
+    if imputation == "KNN":
+        model = joblib.load("ET_DE_KNN.pkl")
+    elif imputation == "KNN_PCA":
+        model = joblib.load("ET_DE_KNN_PCA.pkl")
+    else:
+        model = joblib.load("ET_DE_MICE.pkl")
+except:
+    st.error("Model file not found. Check repository.")
+    st.stop()
 
-elif imputation == "KNN_PCA":
-    model = joblib.load("ET_DE_KNN_PCA.pkl")
-
-else:
-    model = joblib.load("ET_GA_MICE.pkl")
-
-# ----------------------------------------------------
-# SCM Selection
-# ----------------------------------------------------
-
-st.header("SCM Selection")
+# ------------------------------------------------
+# SCM TYPE
+# ------------------------------------------------
 
 scm = st.selectbox(
-    "Select SCM Type",
-    ["RHA", "GGBS", "MK", "FFA", "SCBA"]
+    "SCM Type",
+    ["RHA","GGBS","MK","FFA","SCBA"]
 )
 
 scm_map = {
-    "RHA": 0,
-    "GGBS": 1,
-    "MK": 2,
-    "FFA": 3,
-    "SCBA": 4
+    "RHA":0,
+    "GGBS":1,
+    "MK":2,
+    "FFA":3,
+    "SCBA":4
 }
 
 scm_code = scm_map[scm]
 
-# ----------------------------------------------------
-# Mix Parameters
-# ----------------------------------------------------
+st.markdown("---")
 
-st.header("Input Mix Parameters")
+# ------------------------------------------------
+# INPUT PARAMETERS
+# ------------------------------------------------
 
-cement = st.number_input("Cementitious Content")
-replacement = st.number_input("Replacement Percentage")
-wb = st.number_input("Water Binder Ratio")
-sp = st.number_input("Superplasticizer Percentage")
+col1, col2 = st.columns(2)
 
-sio2 = st.number_input("SiO2")
-al2o3 = st.number_input("Al2O3")
-fe2o3 = st.number_input("Fe2O3")
-cao = st.number_input("CaO")
-mgo = st.number_input("MgO")
-loi = st.number_input("LOI")
+with col1:
 
-sg = st.number_input("Specific Gravity")
+    st.subheader("Mix Design")
 
-slump = st.number_input("Slump Flow")
-t500 = st.number_input("T500 Time")
-vfunnel = st.number_input("V Funnel Time")
-lbox = st.number_input("L Box Ratio")
+    cement = st.number_input("Cementitious Content", value=450.0)
+    replacement = st.number_input("Replacement Percentage", value=20.0)
+    wb = st.number_input("Water Binder Ratio", value=0.40)
+    sp = st.number_input("Superplasticizer %", value=1.5)
 
-split = st.number_input("Split Tensile Strength")
-rcpt = st.number_input("RCPT")
+    st.subheader("Chemical Properties")
 
-# ----------------------------------------------------
-# Prediction
-# ----------------------------------------------------
+    sio2 = st.number_input("SiO2", value=60.0)
+    al2o3 = st.number_input("Al2O3", value=20.0)
+    fe2o3 = st.number_input("Fe2O3", value=3.0)
+    cao = st.number_input("CaO", value=6.0)
+    mgo = st.number_input("MgO", value=2.0)
+    loi = st.number_input("LOI", value=3.0)
 
-if st.button("Predict Strength"):
+with col2:
+
+    st.subheader("Material Properties")
+
+    sg = st.number_input("Specific Gravity", value=2.3)
+
+    st.subheader("Fresh Concrete")
+
+    slump = st.number_input("Slump Flow", value=650.0)
+    t500 = st.number_input("T500 Time", value=4.0)
+    vfunnel = st.number_input("V Funnel Time", value=10.0)
+    lbox = st.number_input("L Box Ratio", value=0.85)
+
+    st.subheader("Hardened Properties")
+
+    split = st.number_input("Split Tensile Strength", value=3.5)
+    rcpt = st.number_input("RCPT", value=1500.0)
+
+st.markdown("---")
+
+# ------------------------------------------------
+# PREDICTION
+# ------------------------------------------------
+
+if st.button("Predict Compressive Strength"):
 
     features = np.array([[
         scm_code,
