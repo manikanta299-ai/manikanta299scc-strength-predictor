@@ -34,7 +34,7 @@ try:
     elif imputation == "KNN_PCA":
         model = joblib.load("ET_DE_KNN_PCA.pkl")
     else:
-        model = joblib.load("ET_DE_MICE.pkl")
+        model = joblib.load("ET_GA_MICE.pkl")
 except:
     st.error("Model file not found. Check repository.")
     st.stop()
