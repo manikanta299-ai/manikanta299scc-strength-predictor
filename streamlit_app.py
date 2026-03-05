@@ -36,10 +36,8 @@ imputation = st.selectbox(
 
 if imputation == "KNN":
 model = joblib.load("models/ET_DE_KNN.pkl")
-
 elif imputation == "KNN_PCA":
 model = joblib.load("models/ET_DE_KNN_PCA.pkl")
-
 else:
 model = joblib.load("models/ET_GA_MICE.pkl")
 
@@ -47,15 +45,18 @@ st.divider()
 
 # ------------------------------------------------
 
-# INPUT TABS
+# INPUT SECTIONS
 
 # ------------------------------------------------
 
-tab1, tab2, tab3, tab4 = st.tabs(
-["Mix Design", "Chemical Properties", "Fresh Concrete", "Hardened Properties"]
-)
+tab1, tab2, tab3, tab4 = st.tabs([
+"Mix Design",
+"Chemical Properties",
+"Fresh Concrete",
+"Hardened Properties"
+])
 
-# MIX DESIGN
+# ---------------- MIX DESIGN ----------------
 
 with tab1:
 
@@ -71,7 +72,7 @@ with col2:
     sp = st.number_input("Superplasticizer Percentage (%)", value=1.5)
 ```
 
-# CHEMICAL
+# ---------------- CHEMICAL ----------------
 
 with tab2:
 
@@ -91,7 +92,7 @@ with col2:
 sg = st.number_input("Specific Gravity", value=2.3)
 ```
 
-# FRESH
+# ---------------- FRESH ----------------
 
 with tab3:
 
@@ -107,7 +108,7 @@ with col2:
     lbox = st.number_input("L Box Ratio", value=0.85)
 ```
 
-# HARDENED
+# ---------------- HARDENED ----------------
 
 with tab4:
 
@@ -174,18 +175,18 @@ prediction = model.predict(input_data)[0]
 
 st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
-confidence = 0.90
-st.progress(confidence)
+st.progress(0.90)
+st.caption("Model Confidence (approx.): 90%")
 
 report = pd.DataFrame({
-    "Parameter":[
-        "Cement",
+    "Parameter": [
+        "Cementitious Content",
         "Replacement %",
         "Water Binder Ratio",
         "Superplasticizer %",
         "Predicted Strength"
     ],
-    "Value":[
+    "Value": [
         cement,
         replacement,
         wb,
