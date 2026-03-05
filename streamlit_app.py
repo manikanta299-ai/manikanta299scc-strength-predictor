@@ -18,7 +18,7 @@ model_map = {
 
 model = joblib.load(model_map[method])
 
-st.subheader("Input Mix Parameters")
+# Inputs
 
 cement = st.number_input("Cementitious_Content", 450.0)
 replacement = st.number_input("Replacement_Percentage", 20.0)
@@ -42,34 +42,5 @@ lbox = st.number_input("L_Box_Ratio", 0.85)
 split = st.number_input("Split_Tensile_Strength", 3.5)
 rcpt = st.number_input("RCPT", 1500.0)
 
-predict = st.button("Predict Compressive Strength")
-
-if predict:
-input_data = pd.DataFrame(
-[[cement, replacement, wb, sp, sio2, al2o3, fe2o3, cao, mgo, loi, sg, slump, t500, vfunnel, lbox, split, rcpt]],
-columns=[
-"Cementitious_Content",
-"Replacement_Percentage",
-"Water_Binder_Ratio",
-"Superplasticizer_Percentage",
-"SiO2",
-"Al2O3",
-"Fe2O3",
-"CaO",
-"MgO",
-"LOI",
-"Specific_Gravity",
-"Slump_Flow",
-"T500_Time",
-"V_Funnel_Time",
-"L_Box_Ratio",
-"Split_Tensile_Strength",
-"RCPT"
-]
-)
-
-```
-prediction = model.predict(input_data)[0]
-
-st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
-```
+if st.button("Predict Compressive Strength"):
+st.success(f"Predicted Compressive Strength = {model.predict(pd.DataFrame([[cement,replacement,wb,sp,sio2,al2o3,fe2o3,cao,mgo,loi,sg,slump,t500,vfunnel,lbox,split,rcpt]], columns=['Cementitious_Content','Replacement_Percentage','Water_Binder_Ratio','Superplasticizer_Percentage','SiO2','Al2O3','Fe2O3','CaO','MgO','LOI','Specific_Gravity','Slump_Flow','T500_Time','V_Funnel_Time','L_Box_Ratio','Split_Tensile_Strength','RCPT']))[0]:.2f} MPa")
