@@ -32,16 +32,16 @@ imputation = st.selectbox(
 try:
 
     if imputation == "KNN":
-        model = joblib.load("ET_DE_KNN.pkl")
+        model = joblib.load("models/ET_DE_KNN.pkl")
 
     elif imputation == "KNN_PCA":
-        model = joblib.load("ET_DE_KNN_PCA.pkl")
+        model = joblib.load("models/ET_DE_KNN_PCA.pkl")
 
     else:
-        model = joblib.load("ET_GA_MICE.pkl")
+        model = joblib.load("models/ET_GA_MICE.pkl")
 
 except:
-    st.error("Model file not found. Please check repository.")
+    st.error("Model file not found. Check repository.")
     st.stop()
 
 # ------------------------------------------------
@@ -66,15 +66,14 @@ scm_code = scm_map[scm]
 st.divider()
 
 # ------------------------------------------------
-# TABS FOR INPUT PARAMETERS
+# INPUT TABS
 # ------------------------------------------------
 
 tab1, tab2, tab3, tab4 = st.tabs(
     ["Mix Design", "Chemical Properties", "Fresh Concrete", "Hardened Properties"]
 )
 
-# ---------------- MIX DESIGN ----------------
-
+# MIX DESIGN
 with tab1:
 
     col1, col2 = st.columns(2)
@@ -87,8 +86,7 @@ with tab1:
         wb = st.number_input("Water Binder Ratio", value=0.40)
         sp = st.number_input("Superplasticizer (%)", value=1.5)
 
-# ---------------- CHEMICAL ----------------
-
+# CHEMICAL
 with tab2:
 
     col1, col2 = st.columns(2)
@@ -105,8 +103,7 @@ with tab2:
 
     sg = st.number_input("Specific Gravity", value=2.3)
 
-# ---------------- FRESH ----------------
-
+# FRESH
 with tab3:
 
     col1, col2 = st.columns(2)
@@ -119,8 +116,7 @@ with tab3:
         vfunnel = st.number_input("V Funnel Time (sec)", value=10.0)
         lbox = st.number_input("L Box Ratio", value=0.85)
 
-# ---------------- HARDENED ----------------
-
+# HARDENED
 with tab4:
 
     col1, col2 = st.columns(2)
@@ -139,44 +135,55 @@ st.divider()
 
 if st.button("Predict Compressive Strength"):
 
-    input_data = pd.DataFrame({
+    input_data = pd.DataFrame([[
+        scm_code,
+        cement,
+        replacement,
+        wb,
+        sp,
+        sio2,
+        al2o3,
+        fe2o3,
+        cao,
+        mgo,
+        loi,
+        sg,
+        slump,
+        t500,
+        vfunnel,
+        lbox,
+        split,
+        rcpt
+    ]], columns=[
 
-        "SCM_Code":[scm_code],
-        "Cementitious_Content":[cement],
-        "Replacement_Percentage":[replacement],
-        "Water_Binder_Ratio":[wb],
-        "Superplasticizer":[sp],
-        "SiO2":[sio2],
-        "Al2O3":[al2o3],
-        "Fe2O3":[fe2o3],
-        "CaO":[cao],
-        "MgO":[mgo],
-        "LOI":[loi],
-        "Specific_Gravity":[sg],
-        "Slump_Flow":[slump],
-        "T500":[t500],
-        "V_Funnel":[vfunnel],
-        "L_Box":[lbox],
-        "Split_Tensile":[split],
-        "RCPT":[rcpt]
+        "SCM_Code",
+        "Cementitious_Content",
+        "Replacement_Percentage",
+        "Water_Binder_Ratio",
+        "Superplasticizer",
+        "SiO2",
+        "Al2O3",
+        "Fe2O3",
+        "CaO",
+        "MgO",
+        "LOI",
+        "Specific_Gravity",
+        "Slump_Flow",
+        "T500",
+        "V_Funnel",
+        "L_Box",
+        "Split_Tensile",
+        "RCPT"
 
-    })
+    ])
 
     prediction = model.predict(input_data)[0]
 
     st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
-    # ------------------------------------------------
-    # CONFIDENCE BAR
-    # ------------------------------------------------
-
     confidence = 0.90
     st.progress(confidence)
     st.caption("Model Confidence (approx.): 90%")
-
-    # ------------------------------------------------
-    # DOWNLOAD REPORT
-    # ------------------------------------------------
 
     report = pd.DataFrame({
         "Parameter":[
