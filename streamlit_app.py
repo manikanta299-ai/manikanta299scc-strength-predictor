@@ -30,6 +30,7 @@ imputation = st.selectbox(
 # ------------------------------------------------
 
 try:
+
     if imputation == "KNN":
         model = joblib.load("ET_DE_KNN.pkl")
 
@@ -65,7 +66,7 @@ scm_code = scm_map[scm]
 st.divider()
 
 # ------------------------------------------------
-# TABS FOR INPUT PARAMETERS
+# TABS
 # ------------------------------------------------
 
 tab1, tab2, tab3, tab4 = st.tabs(
@@ -138,34 +139,34 @@ st.divider()
 
 if st.button("Predict Compressive Strength"):
 
-    features = np.array([[
+    # Correct feature order using DataFrame
+    input_data = pd.DataFrame({
 
-        scm_code,
-        cement,
-        replacement,
-        wb,
-        sp,
-        sio2,
-        al2o3,
-        fe2o3,
-        cao,
-        mgo,
-        loi,
-        sg,
-        slump,
-        t500,
-        vfunnel,
-        lbox,
-        split,
-        rcpt
+        "SCM_Code":[scm_code],
+        "Cementitious_Content":[cement],
+        "Replacement_Percentage":[replacement],
+        "Water_Binder_Ratio":[wb],
+        "Superplasticizer":[sp],
+        "SiO2":[sio2],
+        "Al2O3":[al2o3],
+        "Fe2O3":[fe2o3],
+        "CaO":[cao],
+        "MgO":[mgo],
+        "LOI":[loi],
+        "Specific_Gravity":[sg],
+        "Slump_Flow":[slump],
+        "T500":[t500],
+        "V_Funnel":[vfunnel],
+        "L_Box":[lbox],
+        "Split_Tensile":[split],
+        "RCPT":[rcpt]
 
-    ]])
+    })
 
-    prediction = model.predict(features)[0]
+    prediction = model.predict(input_data)[0]
 
     st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
-    # Confidence indicator
     confidence = 0.90
     st.progress(confidence)
 
