@@ -30,16 +30,23 @@ imputation = st.selectbox(
 
 # ------------------------------------------------
 
+# MODEL FILE MAP
+
+# ------------------------------------------------
+
+model_files = {
+"KNN": "models/ET_DE_KNN.pkl",
+"KNN_PCA": "models/ET_DE_KNN_PCA.pkl",
+"MICE": "models/ET_GA_MICE.pkl"
+}
+
+# ------------------------------------------------
+
 # LOAD MODEL
 
 # ------------------------------------------------
 
-if imputation == "KNN":
-model = joblib.load("models/ET_DE_KNN.pkl")
-elif imputation == "KNN_PCA":
-model = joblib.load("models/ET_DE_KNN_PCA.pkl")
-else:
-model = joblib.load("models/ET_GA_MICE.pkl")
+model = joblib.load(model_files[imputation])
 
 st.divider()
 
@@ -56,70 +63,66 @@ tab1, tab2, tab3, tab4 = st.tabs([
 "Hardened Properties"
 ])
 
-# ---------------- MIX DESIGN ----------------
+# MIX DESIGN
 
 with tab1:
-
-```
 col1, col2 = st.columns(2)
 
+```
 with col1:
-    cement = st.number_input("Cementitious Content (kg/m³)", value=450.0)
-    replacement = st.number_input("Replacement Percentage (%)", value=20.0)
+    cement = st.number_input("Cementitious Content (kg/m³)", 450.0)
+    replacement = st.number_input("Replacement Percentage (%)", 20.0)
 
 with col2:
-    wb = st.number_input("Water Binder Ratio", value=0.40)
-    sp = st.number_input("Superplasticizer Percentage (%)", value=1.5)
+    wb = st.number_input("Water Binder Ratio", 0.40)
+    sp = st.number_input("Superplasticizer Percentage (%)", 1.5)
 ```
 
-# ---------------- CHEMICAL ----------------
+# CHEMICAL
 
 with tab2:
-
-```
 col1, col2 = st.columns(2)
 
+```
 with col1:
-    sio2 = st.number_input("SiO2 (%)", value=60.0)
-    al2o3 = st.number_input("Al2O3 (%)", value=20.0)
-    fe2o3 = st.number_input("Fe2O3 (%)", value=3.0)
+    sio2 = st.number_input("SiO2 (%)", 60.0)
+    al2o3 = st.number_input("Al2O3 (%)", 20.0)
+    fe2o3 = st.number_input("Fe2O3 (%)", 3.0)
 
 with col2:
-    cao = st.number_input("CaO (%)", value=6.0)
-    mgo = st.number_input("MgO (%)", value=2.0)
-    loi = st.number_input("LOI (%)", value=3.0)
+    cao = st.number_input("CaO (%)", 6.0)
+    mgo = st.number_input("MgO (%)", 2.0)
+    loi = st.number_input("LOI (%)", 3.0)
 
-sg = st.number_input("Specific Gravity", value=2.3)
+sg = st.number_input("Specific Gravity", 2.3)
 ```
 
-# ---------------- FRESH ----------------
+# FRESH PROPERTIES
 
 with tab3:
-
-```
 col1, col2 = st.columns(2)
 
+```
 with col1:
-    slump = st.number_input("Slump Flow (mm)", value=650.0)
-    t500 = st.number_input("T500 Time (sec)", value=4.0)
+    slump = st.number_input("Slump Flow (mm)", 650.0)
+    t500 = st.number_input("T500 Time (sec)", 4.0)
 
 with col2:
-    vfunnel = st.number_input("V Funnel Time (sec)", value=10.0)
-    lbox = st.number_input("L Box Ratio", value=0.85)
+    vfunnel = st.number_input("V Funnel Time (sec)", 10.0)
+    lbox = st.number_input("L Box Ratio", 0.85)
 ```
 
-# ---------------- HARDENED ----------------
+# HARDENED PROPERTIES
 
 with tab4:
-
-```
 col1, col2 = st.columns(2)
 
+```
 with col1:
-    split = st.number_input("Split Tensile Strength (MPa)", value=3.5)
+    split = st.number_input("Split Tensile Strength (MPa)", 3.5)
 
 with col2:
-    rcpt = st.number_input("RCPT (Coulombs)", value=1500.0)
+    rcpt = st.number_input("RCPT (Coulombs)", 1500.0)
 ```
 
 st.divider()
