@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
-import joblib
 import pandas as pd
+import joblib
 
 # ------------------------------------------------
 # PAGE SETTINGS
@@ -66,7 +66,7 @@ scm_code = scm_map[scm]
 st.divider()
 
 # ------------------------------------------------
-# INPUT TABS
+# TABS FOR INPUT PARAMETERS
 # ------------------------------------------------
 
 tab1, tab2, tab3, tab4 = st.tabs(
@@ -139,56 +139,39 @@ st.divider()
 
 if st.button("Predict Compressive Strength"):
 
-    input_data = pd.DataFrame([[
-        scm_code,
-        cement,
-        replacement,
-        wb,
-        sp,
-        sio2,
-        al2o3,
-        fe2o3,
-        cao,
-        mgo,
-        loi,
-        sg,
-        slump,
-        t500,
-        vfunnel,
-        lbox,
-        split,
-        rcpt
-    ]], columns=[
+    input_data = pd.DataFrame({
 
-        "SCM_Code",
-        "Cementitious_Content",
-        "Replacement_Percentage",
-        "Water_Binder_Ratio",
-        "Superplasticizer",
-        "SiO2",
-        "Al2O3",
-        "Fe2O3",
-        "CaO",
-        "MgO",
-        "LOI",
-        "Specific_Gravity",
-        "Slump_Flow",
-        "T500",
-        "V_Funnel",
-        "L_Box",
-        "Split_Tensile",
-        "RCPT"
+        "SCM_Code":[scm_code],
+        "Cementitious_Content":[cement],
+        "Replacement_Percentage":[replacement],
+        "Water_Binder_Ratio":[wb],
+        "Superplasticizer":[sp],
+        "SiO2":[sio2],
+        "Al2O3":[al2o3],
+        "Fe2O3":[fe2o3],
+        "CaO":[cao],
+        "MgO":[mgo],
+        "LOI":[loi],
+        "Specific_Gravity":[sg],
+        "Slump_Flow":[slump],
+        "T500":[t500],
+        "V_Funnel":[vfunnel],
+        "L_Box":[lbox],
+        "Split_Tensile":[split],
+        "RCPT":[rcpt]
 
-    ])
+    })
 
     prediction = model.predict(input_data)[0]
 
     st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
-    # confidence indicator
+    # ------------------------------------------------
+    # CONFIDENCE BAR
+    # ------------------------------------------------
+
     confidence = 0.90
     st.progress(confidence)
-
     st.caption("Model Confidence (approx.): 90%")
 
     # ------------------------------------------------
