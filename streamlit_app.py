@@ -35,15 +35,20 @@ imputation = st.selectbox(
 # ------------------------------------------------
 
 try:
-if imputation == "KNN":
-model = joblib.load("models/ET_DE_KNN.pkl")
-elif imputation == "KNN_PCA":
-model = joblib.load("models/ET_DE_KNN_PCA.pkl")
-else:
-model = joblib.load("models/ET_GA_MICE.pkl")
 
-except:
-st.error("Model file not found. Check repository.")
+```
+if imputation == "KNN":
+    model = joblib.load("models/ET_DE_KNN.pkl")
+
+elif imputation == "KNN_PCA":
+    model = joblib.load("models/ET_DE_KNN_PCA.pkl")
+
+else:
+    model = joblib.load("models/ET_GA_MICE.pkl")
+```
+
+except Exception as e:
+st.error(f"Model loading error: {e}")
 st.stop()
 
 st.divider()
@@ -58,7 +63,11 @@ tab1, tab2, tab3, tab4 = st.tabs(
 ["Mix Design", "Chemical Properties", "Fresh Concrete", "Hardened Properties"]
 )
 
+# ------------------------------------------------
+
 # MIX DESIGN
+
+# ------------------------------------------------
 
 with tab1:
 
@@ -74,7 +83,11 @@ with col2:
     sp = st.number_input("Superplasticizer Percentage (%)", value=1.5)
 ```
 
-# CHEMICAL
+# ------------------------------------------------
+
+# CHEMICAL PROPERTIES
+
+# ------------------------------------------------
 
 with tab2:
 
@@ -94,7 +107,11 @@ with col2:
 sg = st.number_input("Specific Gravity", value=2.3)
 ```
 
+# ------------------------------------------------
+
 # FRESH PROPERTIES
+
+# ------------------------------------------------
 
 with tab3:
 
@@ -110,7 +127,11 @@ with col2:
     lbox = st.number_input("L Box Ratio", value=0.85)
 ```
 
+# ------------------------------------------------
+
 # HARDENED PROPERTIES
+
+# ------------------------------------------------
 
 with tab4:
 
@@ -185,10 +206,10 @@ st.caption("Model Confidence (approx.): 90%")
 
 report = pd.DataFrame({
     "Parameter":[
-        "Cement",
-        "Replacement %",
+        "Cementitious Content",
+        "Replacement Percentage",
         "Water Binder Ratio",
-        "Superplasticizer %",
+        "Superplasticizer Percentage",
         "Predicted Strength"
     ],
     "Value":[
