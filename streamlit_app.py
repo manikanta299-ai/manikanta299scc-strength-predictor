@@ -139,8 +139,7 @@ st.divider()
 
 if st.button("Predict Compressive Strength"):
 
-    features = np.array([[
-
+    input_data = pd.DataFrame([[
         scm_code,
         cement,
         replacement,
@@ -159,10 +158,30 @@ if st.button("Predict Compressive Strength"):
         lbox,
         split,
         rcpt
+    ]], columns=[
 
-    ]])
+        "SCM_Code",
+        "Cementitious_Content",
+        "Replacement_Percentage",
+        "Water_Binder_Ratio",
+        "Superplasticizer",
+        "SiO2",
+        "Al2O3",
+        "Fe2O3",
+        "CaO",
+        "MgO",
+        "LOI",
+        "Specific_Gravity",
+        "Slump_Flow",
+        "T500",
+        "V_Funnel",
+        "L_Box",
+        "Split_Tensile",
+        "RCPT"
 
-    prediction = model.predict(features)[0]
+    ])
+
+    prediction = model.predict(input_data)[0]
 
     st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
