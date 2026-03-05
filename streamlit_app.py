@@ -8,11 +8,7 @@ import joblib
 
 # ------------------------------------------------
 
-st.set_page_config(
-page_title="SCC Strength Predictor",
-page_icon="🧱",
-layout="wide"
-)
+st.set_page_config(page_title="SCC Strength Predictor", page_icon="🧱", layout="wide")
 
 st.title("AI-Based SCC Compressive Strength Predictor")
 st.caption("Metaheuristic Optimized Extra Trees Model")
@@ -40,90 +36,68 @@ model_files = {
 "MICE": "models/ET_GA_MICE.pkl"
 }
 
-# ------------------------------------------------
-
-# LOAD MODEL
-
-# ------------------------------------------------
-
 model = joblib.load(model_files[imputation])
 
 st.divider()
 
 # ------------------------------------------------
 
-# INPUT SECTIONS
+# MIX DESIGN INPUT
 
 # ------------------------------------------------
 
-tab1, tab2, tab3, tab4 = st.tabs([
-"Mix Design",
-"Chemical Properties",
-"Fresh Concrete",
-"Hardened Properties"
-])
+st.subheader("Mix Design")
 
-# MIX DESIGN
+cement = st.number_input("Cementitious Content (kg/m³)", 450.0)
+replacement = st.number_input("Replacement Percentage (%)", 20.0)
+wb = st.number_input("Water Binder Ratio", 0.40)
+sp = st.number_input("Superplasticizer Percentage (%)", 1.5)
 
-with tab1:
-col1, col2 = st.columns(2)
+st.divider()
 
-```
-with col1:
-    cement = st.number_input("Cementitious Content (kg/m³)", 450.0)
-    replacement = st.number_input("Replacement Percentage (%)", 20.0)
+# ------------------------------------------------
 
-with col2:
-    wb = st.number_input("Water Binder Ratio", 0.40)
-    sp = st.number_input("Superplasticizer Percentage (%)", 1.5)
-```
+# CHEMICAL PROPERTIES
 
-# CHEMICAL
+# ------------------------------------------------
 
-with tab2:
-col1, col2 = st.columns(2)
+st.subheader("Chemical Properties")
 
-```
-with col1:
-    sio2 = st.number_input("SiO2 (%)", 60.0)
-    al2o3 = st.number_input("Al2O3 (%)", 20.0)
-    fe2o3 = st.number_input("Fe2O3 (%)", 3.0)
-
-with col2:
-    cao = st.number_input("CaO (%)", 6.0)
-    mgo = st.number_input("MgO (%)", 2.0)
-    loi = st.number_input("LOI (%)", 3.0)
-
+sio2 = st.number_input("SiO2 (%)", 60.0)
+al2o3 = st.number_input("Al2O3 (%)", 20.0)
+fe2o3 = st.number_input("Fe2O3 (%)", 3.0)
+cao = st.number_input("CaO (%)", 6.0)
+mgo = st.number_input("MgO (%)", 2.0)
+loi = st.number_input("LOI (%)", 3.0)
 sg = st.number_input("Specific Gravity", 2.3)
-```
+
+st.divider()
+
+# ------------------------------------------------
 
 # FRESH PROPERTIES
 
-with tab3:
-col1, col2 = st.columns(2)
+# ------------------------------------------------
 
-```
-with col1:
-    slump = st.number_input("Slump Flow (mm)", 650.0)
-    t500 = st.number_input("T500 Time (sec)", 4.0)
+st.subheader("Fresh Concrete Properties")
 
-with col2:
-    vfunnel = st.number_input("V Funnel Time (sec)", 10.0)
-    lbox = st.number_input("L Box Ratio", 0.85)
-```
+slump = st.number_input("Slump Flow (mm)", 650.0)
+t500 = st.number_input("T500 Time (sec)", 4.0)
+vfunnel = st.number_input("V Funnel Time (sec)", 10.0)
+lbox = st.number_input("L Box Ratio", 0.85)
+
+st.divider()
+
+# ------------------------------------------------
 
 # HARDENED PROPERTIES
 
-with tab4:
-col1, col2 = st.columns(2)
+# ------------------------------------------------
 
-```
-with col1:
-    split = st.number_input("Split Tensile Strength (MPa)", 3.5)
+st.subheader("Hardened Properties")
 
-with col2:
-    rcpt = st.number_input("RCPT (Coulombs)", 1500.0)
-```
+split = st.number_input("Split Tensile Strength (MPa)", 3.5)
+rcpt = st.number_input("RCPT (Coulombs)", 1500.0)
 
 st.divider()
 
@@ -179,7 +153,6 @@ prediction = model.predict(input_data)[0]
 st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
 st.progress(0.90)
-st.caption("Model Confidence (approx.): 90%")
 
 report = pd.DataFrame({
     "Parameter": [
