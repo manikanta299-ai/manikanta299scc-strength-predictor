@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-st.set_page_config(page_title="SCC Strength Predictor", layout="wide")
+st.set_page_config(page_title="SCC Strength Predictor")
 
 st.title("AI-Based SCC Compressive Strength Predictor")
 
@@ -17,8 +17,6 @@ model_map = {
 }
 
 model = joblib.load(model_map[method])
-
-st.header("Input Parameters")
 
 cement = st.number_input("Cementitious_Content",450.0)
 replacement = st.number_input("Replacement_Percentage",20.0)
@@ -45,11 +43,11 @@ rcpt = st.number_input("RCPT",1500.0)
 predict = st.button("Predict Compressive Strength")
 
 if predict:
-data = pd.DataFrame([[cement,replacement,wb,sp,sio2,al2o3,fe2o3,cao,mgo,loi,sg,slump,t500,vfunnel,lbox,split,rcpt]],
+input_data = pd.DataFrame([[cement,replacement,wb,sp,sio2,al2o3,fe2o3,cao,mgo,loi,sg,slump,t500,vfunnel,lbox,split,rcpt]],
 columns=["Cementitious_Content","Replacement_Percentage","Water_Binder_Ratio","Superplasticizer_Percentage","SiO2","Al2O3","Fe2O3","CaO","MgO","LOI","Specific_Gravity","Slump_Flow","T500_Time","V_Funnel_Time","L_Box_Ratio","Split_Tensile_Strength","RCPT"])
 
 ```
-result = model.predict(data)[0]
+prediction = model.predict(input_data)[0]
 
-st.success("Predicted Compressive Strength: %.2f MPa" % result)
+st.success(f"Predicted Compressive Strength: {prediction:.2f} MPa")
 ```
