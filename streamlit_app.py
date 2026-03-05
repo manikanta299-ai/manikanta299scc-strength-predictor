@@ -34,22 +34,14 @@ imputation = st.selectbox(
 
 # ------------------------------------------------
 
-try:
-
-```
 if imputation == "KNN":
-    model = joblib.load("models/ET_DE_KNN.pkl")
+model = joblib.load("models/ET_DE_KNN.pkl")
 
 elif imputation == "KNN_PCA":
-    model = joblib.load("models/ET_DE_KNN_PCA.pkl")
+model = joblib.load("models/ET_DE_KNN_PCA.pkl")
 
 else:
-    model = joblib.load("models/ET_GA_MICE.pkl")
-```
-
-except Exception as e:
-st.error(f"Model loading error: {e}")
-st.stop()
+model = joblib.load("models/ET_GA_MICE.pkl")
 
 st.divider()
 
@@ -63,11 +55,7 @@ tab1, tab2, tab3, tab4 = st.tabs(
 ["Mix Design", "Chemical Properties", "Fresh Concrete", "Hardened Properties"]
 )
 
-# ------------------------------------------------
-
 # MIX DESIGN
-
-# ------------------------------------------------
 
 with tab1:
 
@@ -83,11 +71,7 @@ with col2:
     sp = st.number_input("Superplasticizer Percentage (%)", value=1.5)
 ```
 
-# ------------------------------------------------
-
-# CHEMICAL PROPERTIES
-
-# ------------------------------------------------
+# CHEMICAL
 
 with tab2:
 
@@ -95,9 +79,9 @@ with tab2:
 col1, col2 = st.columns(2)
 
 with col1:
-    sio2 = st.number_input("SiO₂ (%)", value=60.0)
-    al2o3 = st.number_input("Al₂O₃ (%)", value=20.0)
-    fe2o3 = st.number_input("Fe₂O₃ (%)", value=3.0)
+    sio2 = st.number_input("SiO2 (%)", value=60.0)
+    al2o3 = st.number_input("Al2O3 (%)", value=20.0)
+    fe2o3 = st.number_input("Fe2O3 (%)", value=3.0)
 
 with col2:
     cao = st.number_input("CaO (%)", value=6.0)
@@ -107,11 +91,7 @@ with col2:
 sg = st.number_input("Specific Gravity", value=2.3)
 ```
 
-# ------------------------------------------------
-
-# FRESH PROPERTIES
-
-# ------------------------------------------------
+# FRESH
 
 with tab3:
 
@@ -127,11 +107,7 @@ with col2:
     lbox = st.number_input("L Box Ratio", value=0.85)
 ```
 
-# ------------------------------------------------
-
-# HARDENED PROPERTIES
-
-# ------------------------------------------------
+# HARDENED
 
 with tab4:
 
@@ -175,7 +151,6 @@ input_data = pd.DataFrame([[
     split,
     rcpt
 ]], columns=[
-
     "Cementitious_Content",
     "Replacement_Percentage",
     "Water_Binder_Ratio",
@@ -193,7 +168,6 @@ input_data = pd.DataFrame([[
     "L_Box_Ratio",
     "Split_Tensile_Strength",
     "RCPT"
-
 ])
 
 prediction = model.predict(input_data)[0]
@@ -202,14 +176,13 @@ st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
 confidence = 0.90
 st.progress(confidence)
-st.caption("Model Confidence (approx.): 90%")
 
 report = pd.DataFrame({
     "Parameter":[
-        "Cementitious Content",
-        "Replacement Percentage",
+        "Cement",
+        "Replacement %",
         "Water Binder Ratio",
-        "Superplasticizer Percentage",
+        "Superplasticizer %",
         "Predicted Strength"
     ],
     "Value":[
