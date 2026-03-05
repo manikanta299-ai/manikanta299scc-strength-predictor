@@ -66,7 +66,7 @@ scm_code = scm_map[scm]
 st.divider()
 
 # ------------------------------------------------
-# TABS
+# INPUT TABS
 # ------------------------------------------------
 
 tab1, tab2, tab3, tab4 = st.tabs(
@@ -139,34 +139,34 @@ st.divider()
 
 if st.button("Predict Compressive Strength"):
 
-    # Correct feature order using DataFrame
-    input_data = pd.DataFrame({
+    features = np.array([[
 
-        "SCM_Code":[scm_code],
-        "Cementitious_Content":[cement],
-        "Replacement_Percentage":[replacement],
-        "Water_Binder_Ratio":[wb],
-        "Superplasticizer":[sp],
-        "SiO2":[sio2],
-        "Al2O3":[al2o3],
-        "Fe2O3":[fe2o3],
-        "CaO":[cao],
-        "MgO":[mgo],
-        "LOI":[loi],
-        "Specific_Gravity":[sg],
-        "Slump_Flow":[slump],
-        "T500":[t500],
-        "V_Funnel":[vfunnel],
-        "L_Box":[lbox],
-        "Split_Tensile":[split],
-        "RCPT":[rcpt]
+        scm_code,
+        cement,
+        replacement,
+        wb,
+        sp,
+        sio2,
+        al2o3,
+        fe2o3,
+        cao,
+        mgo,
+        loi,
+        sg,
+        slump,
+        t500,
+        vfunnel,
+        lbox,
+        split,
+        rcpt
 
-    })
+    ]])
 
-    prediction = model.predict(input_data)[0]
+    prediction = model.predict(features)[0]
 
     st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
+    # confidence indicator
     confidence = 0.90
     st.progress(confidence)
 
