@@ -31,20 +31,17 @@ imputation = st.selectbox(
 
 # ------------------------------------------------
 
-# LOAD MODEL
+# LOAD MODEL (no try/except to avoid indentation issues)
 
 # ------------------------------------------------
 
-try:
-if imputation == "KNN":
-model = joblib.load("ET_DE_KNN.pkl")
-elif imputation == "KNN_PCA":
-model = joblib.load("ET_DE_KNN_PCA.pkl")
-else:
-model = joblib.load("ET_GA_MICE.pkl")
-except:
-st.error("Model file not found. Please check repository.")
-st.stop()
+model_files = {
+"KNN": "ET_DE_KNN.pkl",
+"KNN_PCA": "ET_DE_KNN_PCA.pkl",
+"MICE": "ET_DE_MICE.pkl"
+}
+
+model = joblib.load(model_files[imputation])
 
 # ------------------------------------------------
 
@@ -82,10 +79,9 @@ tab1, tab2, tab3, tab4 = st.tabs(
 # ---------------- MIX DESIGN ----------------
 
 with tab1:
-
-```
 col1, col2 = st.columns(2)
 
+```
 with col1:
     cement = st.number_input("Cementitious Content (kg/m³)", value=450.0)
     replacement = st.number_input("Replacement Percentage (%)", value=20.0)
@@ -98,10 +94,9 @@ with col2:
 # ---------------- CHEMICAL ----------------
 
 with tab2:
-
-```
 col1, col2 = st.columns(2)
 
+```
 with col1:
     sio2 = st.number_input("SiO2 (%)", value=60.0)
     al2o3 = st.number_input("Al2O3 (%)", value=20.0)
@@ -118,10 +113,9 @@ sg = st.number_input("Specific Gravity", value=2.3)
 # ---------------- FRESH ----------------
 
 with tab3:
-
-```
 col1, col2 = st.columns(2)
 
+```
 with col1:
     slump = st.number_input("Slump Flow (mm)", value=650.0)
     t500 = st.number_input("T500 Time (sec)", value=4.0)
@@ -134,10 +128,9 @@ with col2:
 # ---------------- HARDENED ----------------
 
 with tab4:
-
-```
 col1, col2 = st.columns(2)
 
+```
 with col1:
     split = st.number_input("Split Tensile Strength (MPa)", value=3.5)
 
@@ -157,7 +150,6 @@ if st.button("Predict Compressive Strength"):
 
 ```
 features = np.array([[
-
     scm_code,
     cement,
     replacement,
@@ -176,21 +168,16 @@ features = np.array([[
     lbox,
     split,
     rcpt
-
 ]])
 
 prediction = model.predict(features)[0]
 
 st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
 
-# Confidence indicator
 confidence = 0.90
 st.progress(confidence)
 st.caption("Model Confidence (approx.): 90%")
 
-# ------------------------------------------------
-# DOWNLOAD REPORT
-# ------------------------------------------------
 report = pd.DataFrame({
     "Parameter": [
         "SCM",
