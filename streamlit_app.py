@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 st.set_page_config(page_title="SCC Strength Predictor", page_icon="🧱", layout="wide")
 
@@ -133,117 +135,92 @@ if st.button("Predict Compressive Strength"):
     st.caption("Model confidence ≈ 90%")
 
     # ------------------------------------------------
-    # DOWNLOAD REPORT
+    # SCM COMPARISON GRAPH
     # ------------------------------------------------
 
-    report = pd.DataFrame({
-        "Parameter":[
-            "SCM",
-            "Cementitious Content",
-            "Replacement %",
-            "Water Binder Ratio",
-            "Superplasticizer %",
-            "Predicted Strength"
-        ],
-        "Value":[
-            scm,
-            cement,
-            replacement,
-            wb,
-            sp,
-            prediction
-        ]
-    })
-
-    csv = report.to_csv(index=False).encode("utf-8")
-
-    st.download_button(
-        "Download Prediction Report",
-        csv,
-        "SCC_prediction_report.csv",
-        "text/csv"
-    )
-
-    # ------------------------------------------------
-    # COMPARISON GRAPH
-    # ------------------------------------------------
-
-    st.subheader("Predicted Strength Comparison")
-
+    materials = ["RHA","GGBS","MK","FFA","SCBA"]
     strengths = []
 
     for code in range(5):
 
         X_temp = X.copy()
         X_temp["SCM_Code"] = code
+
         strengths.append(model.predict(X_temp)[0])
 
-    materials = ["RHA","GGBS","MK","FFA","SCBA"]
-
     fig, ax = plt.subplots()
+
     ax.bar(materials, strengths)
-    ax.set_ylabel("Predicted Compressive Strength (MPa)")
+
+    ax.set_ylabel("Predicted Strength (MPa)")
     ax.set_title("SCM Comparison")
 
     st.pyplot(fig)
+
+    # ------------------------------------------------
+    # REPLACEMENT SENSITIVITY
+    # ------------------------------------------------
+
     st.subheader("Replacement Percentage Sensitivity")
 
-replacement_range = list(range(0,61,5))
-strength_values = []
+    replacement_range = list(range(0,61,5))
+    strength_values = []
 
-for r in replacement_range:
-
-    X_temp = X.copy()
-    X_temp["Replacement_Percentage"] = r
-
-    strength_values.append(model.predict(X_temp)[0])
-
-fig2, ax2 = plt.subplots()
-
-ax2.plot(replacement_range, strength_values, marker="o")
-
-ax2.set_xlabel("Replacement Percentage (%)")
-ax2.set_ylabel("Predicted Compressive Strength (MPa)")
-ax2.set_title("Effect of SCM Replacement on Strength")
-
-st.pyplot(fig2)
-st.subheader("3D Strength Surface")
-
-import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
-
-replacement_range = np.linspace(0,60,15)
-wb_range = np.linspace(0.30,0.50,15)
-
-X_mesh, Y_mesh = np.meshgrid(replacement_range, wb_range)
-
-Z = []
-
-for i in range(len(wb_range)):
-
-    row = []
-
-    for j in range(len(replacement_range)):
+    for r in replacement_range:
 
         X_temp = X.copy()
+        X_temp["Replacement_Percentage"] = r
 
-        X_temp["Replacement_Percentage"] = replacement_range[j]
-        X_temp["Water_Binder_Ratio"] = wb_range[i]
+        strength_values.append(model.predict(X_temp)[0])
 
-        row.append(model.predict(X_temp)[0])
+    fig2, ax2 = plt.subplots()
 
-    Z.append(row)
+    ax2.plot(replacement_range, strength_values, marker="o")
 
-Z = np.array(Z)
+    ax2.set_xlabel("Replacement Percentage (%)")
+    ax2.set_ylabel("Predicted Strength (MPa)")
+    ax2.set_title("Effect of Replacement %")
 
-fig3 = plt.figure()
+    st.pyplot(fig2)
 
-ax = fig3.add_subplot(111, projection='3d')
+    # ------------------------------------------------
+    # 3D STRENGTH SURFACE
+    # ------------------------------------------------
 
-ax.plot_surface(X_mesh, Y_mesh, Z)
+    st.subheader("3D Strength Surface")
 
-ax.set_xlabel("Replacement Percentage (%)")
-ax.set_ylabel("Water/Binder Ratio")
-ax.set_zlabel("Predicted Strength (MPa)")
+    replacement_range = np.linspace(0,60,15)
+    wb_range = np.linspace(0.30,0.50,15)
 
-st.pyplot(fig3)
+    X_mesh, Y_mesh = np.meshgrid(replacement_range, wb_range)
+
+    Z = []
+
+    for i in range(len(wb_range)):
+
+        row = []
+
+        for j in range(len(replacement_range)):
+
+            X_temp = X.copy()
+
+            X_temp["Replacement_Percentage"] = replacement_range[j]
+            X_temp["Water_Binder_Ratio"] = wb_range[i]
+
+            row.append(model.predict(X_temp)[0])
+
+        Z.append(row)
+
+    Z = np.array(Z)
+
+    fig3 = plt.figure()
+
+    ax3 = fig3.add_subplot(111, projection='3d')
+
+    ax3.plot_surface(X_mesh, Y_mesh, Z)
+
+    ax3.set_xlabel("Replacement %")
+    ax3.set_ylabel("Water/Binder Ratio")
+    ax3.set_zlabel("Strength (MPa)")
+
+    st.pyplot(fig3)
