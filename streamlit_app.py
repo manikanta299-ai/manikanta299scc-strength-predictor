@@ -186,3 +186,64 @@ if st.button("Predict Compressive Strength"):
     ax.set_title("SCM Comparison")
 
     st.pyplot(fig)
+    st.subheader("Replacement Percentage Sensitivity")
+
+replacement_range = list(range(0,61,5))
+strength_values = []
+
+for r in replacement_range:
+
+    X_temp = X.copy()
+    X_temp["Replacement_Percentage"] = r
+
+    strength_values.append(model.predict(X_temp)[0])
+
+fig2, ax2 = plt.subplots()
+
+ax2.plot(replacement_range, strength_values, marker="o")
+
+ax2.set_xlabel("Replacement Percentage (%)")
+ax2.set_ylabel("Predicted Compressive Strength (MPa)")
+ax2.set_title("Effect of SCM Replacement on Strength")
+
+st.pyplot(fig2)
+st.subheader("3D Strength Surface")
+
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+
+replacement_range = np.linspace(0,60,15)
+wb_range = np.linspace(0.30,0.50,15)
+
+X_mesh, Y_mesh = np.meshgrid(replacement_range, wb_range)
+
+Z = []
+
+for i in range(len(wb_range)):
+
+    row = []
+
+    for j in range(len(replacement_range)):
+
+        X_temp = X.copy()
+
+        X_temp["Replacement_Percentage"] = replacement_range[j]
+        X_temp["Water_Binder_Ratio"] = wb_range[i]
+
+        row.append(model.predict(X_temp)[0])
+
+    Z.append(row)
+
+Z = np.array(Z)
+
+fig3 = plt.figure()
+
+ax = fig3.add_subplot(111, projection='3d')
+
+ax.plot_surface(X_mesh, Y_mesh, Z)
+
+ax.set_xlabel("Replacement Percentage (%)")
+ax.set_ylabel("Water/Binder Ratio")
+ax.set_zlabel("Predicted Strength (MPa)")
+
+st.pyplot(fig3)
