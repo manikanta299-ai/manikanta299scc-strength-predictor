@@ -2,23 +2,30 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-st.set_page_config(page_title="SCC Strength Predictor")
+st.set_page_config(page_title="SCC Strength Predictor", layout="wide")
 
 st.title("AI-Based SCC Compressive Strength Predictor")
 
-# Model selection
+# -----------------------------
 
-method = st.selectbox("Select Imputation Method", ["KNN", "KNN_PCA", "MICE"])
+# Model Selection
 
-model_map = {
+# -----------------------------
+
+method = st.selectbox(
+"Select Imputation Method",
+["KNN", "KNN_PCA", "MICE"]
+)
+
+model_files = {
 "KNN": "models/ET_DE_KNN.pkl",
 "KNN_PCA": "models/ET_DE_KNN_PCA.pkl",
 "MICE": "models/ET_GA_MICE.pkl"
 }
 
-model = joblib.load(model_map[method])
+model = joblib.load(model_files[method])
 
-# Inputs
+st.header("Input Parameters")
 
 cement = st.number_input("Cementitious_Content", 450.0)
 replacement = st.number_input("Replacement_Percentage", 20.0)
@@ -42,5 +49,35 @@ lbox = st.number_input("L_Box_Ratio", 0.85)
 split = st.number_input("Split_Tensile_Strength", 3.5)
 rcpt = st.number_input("RCPT", 1500.0)
 
-if st.button("Predict Compressive Strength"):
-st.success(f"Predicted Compressive Strength = {model.predict(pd.DataFrame([[cement,replacement,wb,sp,sio2,al2o3,fe2o3,cao,mgo,loi,sg,slump,t500,vfunnel,lbox,split,rcpt]], columns=['Cementitious_Content','Replacement_Percentage','Water_Binder_Ratio','Superplasticizer_Percentage','SiO2','Al2O3','Fe2O3','CaO','MgO','LOI','Specific_Gravity','Slump_Flow','T500_Time','V_Funnel_Time','L_Box_Ratio','Split_Tensile_Strength','RCPT']))[0]:.2f} MPa")
+predict = st.button("Predict Compressive Strength")
+
+if predict:
+input_data = pd.DataFrame(
+[[cement, replacement, wb, sp, sio2, al2o3, fe2o3, cao, mgo, loi, sg,
+slump, t500, vfunnel, lbox, split, rcpt]],
+columns=[
+"Cementitious_Content",
+"Replacement_Percentage",
+"Water_Binder_Ratio",
+"Superplasticizer_Percentage",
+"SiO2",
+"Al2O3",
+"Fe2O3",
+"CaO",
+"MgO",
+"LOI",
+"Specific_Gravity",
+"Slump_Flow",
+"T500_Time",
+"V_Funnel_Time",
+"L_Box_Ratio",
+"Split_Tensile_Strength",
+"RCPT"
+]
+)
+
+```
+prediction = model.predict(input_data)[0]
+
+st.success(f"Predicted Compressive Strength = {prediction:.2f} MPa")
+```
