@@ -2,14 +2,16 @@ import streamlit as st
 import pandas as pd
 import joblib
 
------------------------------
-PAGE SETTINGS
------------------------------
+# ------------------------------------------------
+# PAGE SETTINGS
+# ------------------------------------------------
 
-st.set_page_config(page_title="SCC Strength Predictor", page_icon="🧱")
-
+st.set_page_config(
+    page_title="SCC Strength Predictor",
+    page_icon="🧱",
+    layout="wide"
+)
 st.title("AI-Based SCC Compressive Strength Predictor")
-
 -----------------------------
 LOAD MODEL
 -----------------------------
