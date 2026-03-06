@@ -2,37 +2,23 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# ------------------------------------------------
+# Page settings
 
-# PAGE SETTINGS
-
-# ------------------------------------------------
-
-st.set_page_config(
-page_title="SCC Strength Predictor",
-page_icon="🧱",
-layout="wide"
-)
+st.set_page_config(page_title="SCC Strength Predictor", page_icon="🧱", layout="wide")
 
 st.title("AI-Based SCC Compressive Strength Predictor")
 st.caption("Metaheuristic Optimized Extra Trees Model")
 
-# ------------------------------------------------
+# ------------------------------
 
 # MODEL SELECTION
 
-# ------------------------------------------------
+# ------------------------------
 
 imputation = st.selectbox(
 "Select Imputation Method",
 ["KNN", "KNN_PCA", "MICE"]
 )
-
-# ------------------------------------------------
-
-# LOAD MODEL
-
-# ------------------------------------------------
 
 model_map = {
 "KNN": "models/ET_DE_KNN.pkl",
@@ -42,11 +28,11 @@ model_map = {
 
 model = joblib.load(model_map[imputation])
 
-# ------------------------------------------------
+# ------------------------------
 
 # SCM TYPE
 
-# ------------------------------------------------
+# ------------------------------
 
 scm = st.selectbox(
 "SCM Type",
@@ -65,22 +51,16 @@ scm_code = scm_map[scm]
 
 st.divider()
 
-# ------------------------------------------------
+# ------------------------------
 
-# MIX DESIGN INPUTS
+# INPUT PARAMETERS
 
-# ------------------------------------------------
+# ------------------------------
 
 cement = st.number_input("Cementitious Content (kg/m³)", value=450.0)
 replacement = st.number_input("Replacement Percentage (%)", value=20.0)
 wb = st.number_input("Water Binder Ratio", value=0.40)
 sp = st.number_input("Superplasticizer (%)", value=1.5)
-
-# ------------------------------------------------
-
-# CHEMICAL PROPERTIES
-
-# ------------------------------------------------
 
 sio2 = st.number_input("SiO2 (%)", value=60.0)
 al2o3 = st.number_input("Al2O3 (%)", value=20.0)
@@ -92,39 +72,28 @@ loi = st.number_input("LOI (%)", value=3.0)
 
 sg = st.number_input("Specific Gravity", value=2.3)
 
-# ------------------------------------------------
-
-# FRESH PROPERTIES
-
-# ------------------------------------------------
-
 slump = st.number_input("Slump Flow (mm)", value=650.0)
 t500 = st.number_input("T500 Time (sec)", value=4.0)
 vfunnel = st.number_input("V Funnel Time (sec)", value=10.0)
 lbox = st.number_input("L Box Ratio", value=0.85)
-
-# ------------------------------------------------
-
-# HARDENED PROPERTIES
-
-# ------------------------------------------------
 
 split = st.number_input("Split Tensile Strength (MPa)", value=3.5)
 rcpt = st.number_input("RCPT (Coulombs)", value=1500.0)
 
 st.divider()
 
-# ------------------------------------------------
+# ------------------------------
 
 # PREDICTION
 
-# ------------------------------------------------
+# ------------------------------
 
-if st.button("Predict Compressive Strength"):
+predict = st.button("Predict Compressive Strength")
+
+if predict:
 
 ```
 input_data = pd.DataFrame([[
-
     cement,
     replacement,
     wb,
@@ -143,9 +112,7 @@ input_data = pd.DataFrame([[
     split,
     rcpt,
     scm_code
-
 ]], columns=[
-
     "Cementitious_Content",
     "Replacement_Percentage",
     "Water_Binder_Ratio",
@@ -164,7 +131,6 @@ input_data = pd.DataFrame([[
     "Split_Tensile_Strength",
     "RCPT",
     "SCM_Code"
-
 ])
 
 prediction = model.predict(input_data)[0]
